@@ -43,4 +43,11 @@ if user_input:
 
     # Generate assistant's response
     assistant_prompt = (
-        f"The user described the following: {user_input_
+        f"The user described the following: {user_input}. "
+        f"Remember, you're Dr. Ravi, and only provide advice related to orthopedics, sports injuries, or physiotherapy."
+    )
+    assistant_response = get_response(assistant_prompt)
+    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
+    
+    with st.chat_message("assistant"):
+        st.markdown(assistant_response)

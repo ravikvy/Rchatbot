@@ -5,7 +5,7 @@ from openai import OpenAI
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Title of the app
-st.title("Health Symptom Checker")
+st.title("Dr. Ravi - Ortho & Sports Injury Advisor")
 
 # Initialize session state for chat history
 if "messages" not in st.session_state:
@@ -18,19 +18,20 @@ for message in st.session_state.messages:
         st.markdown(content)
 
 # Collect user input for symptoms
-user_input = st.chat_input("Describe your symptoms here...")
+user_input = st.chat_input("Describe your symptoms related to ortho, sports injury, or physiotherapy...")
 
 # Function to get a response from OpenAI with health advice
 def get_response(prompt):
-    # Here, you may include a more specific prompt or fine-tune the assistant's instructions to provide general remedies
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": m["role"], "content": m["content"]}
-            for m in st.session_state.messages
-        ] + [{"role": "user", "content": prompt}]
+            {"role": "system", "content": (
+                "You are Dr. Ravi, a helpful and knowledgeable medical assistant who provides advice "
+                "only related to orthopedics, sports injuries, and physiotherapy. Politely decline questions "
+                "outside your domain and encourage users to seek professional help if symptoms are severe."
+            )}
+        ] + st.session_state.messages + [{"role": "user", "content": prompt}]
     )
-    # Access the content directly as an attribute
     return response.choices[0].message.content
 
 # Process and display response if there's input
@@ -41,9 +42,5 @@ if user_input:
         st.markdown(user_input)
 
     # Generate assistant's response
-    assistant_prompt = f"User has reported the following symptoms: {user_input}. Provide a general remedy or advice."
-    assistant_response = get_response(assistant_prompt)
-    st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-    
-    with st.chat_message("assistant"):
-        st.markdown(assistant_response)
+    assistant_prompt = (
+        f"The user described the following: {user_input_
